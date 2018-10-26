@@ -1,0 +1,28 @@
+version: '2.1'
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: axon-metrics-example_prometheus_local
+    ports:
+      - "9090:9090"
+    volumes:
+      - $PWD:/etc/prometheus/
+
+  grafana:
+    image: grafana/grafana
+    container_name: axon-metrics-example_grafana_local
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+
+  axon-server:
+    image: axoniq/axonserver
+    container_name: axon-metrics-example_axonserver_local
+    healthcheck:
+      test: "curl -f 'http://localhost:8024/actuator/health'"
+    ports:
+      - 8024:8024
+      - 8124:8124
+
