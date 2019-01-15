@@ -43,7 +43,7 @@ public class FlightDataGenerator {
             try{
                 commandGateway.sendAndWait(new BookSeatCommand(flightId,"Passenger_ " + i));
             } catch (IllegalArgumentException e){
-                LOGGER.info("Failed to book seat", e);
+                LOGGER.warn("Failed to book seat");
             }
         }
     }
