@@ -7,6 +7,7 @@ import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.config.Configurer;
 import org.axonframework.config.ConfigurerModule;
 import org.axonframework.config.MessageMonitorFactory;
+import org.axonframework.eventhandling.EventMessage;
 import org.axonframework.eventhandling.TrackingEventProcessor;
 import org.axonframework.metrics.CapacityMonitor;
 import org.axonframework.metrics.MessageCountingMonitor;
@@ -52,7 +53,15 @@ public class MetricConfig {
                                                                  clazz -> componentName + "_" + clazz.getSimpleName(),
                                                                  metricRegistry);
 
-            return new MultiMessageMonitor<>(messageCounterPerType, messageTimerPerType, capacityMonitor);
+            // The configurer only accepts message monitors that deal with messages of type Message<?>, I've added a
+            // casting decorator that casts to EventMessage which is needed to use the EventProcessorLatencyMonitor
+            CustomPayloadTypeMessageMonitorWrapper<CastingMessageMonitorDecorator<EventMessage<?>, CustomEventProcessorLatencyMonitor>> eventLatencyMonitor =
+                    new CustomPayloadTypeMessageMonitorWrapper<>(() -> new CastingMessageMonitorDecorator<>(new CustomEventProcessorLatencyMonitor()),
+                                                                 clazz -> componentName + "_" + clazz.getSimpleName(),
+                                                                 metricRegistry);
+
+            return new MultiMessageMonitor<>(messageCounterPerType, messageTimerPerType, capacityMonitor, eventLatencyMonitor);
+
         };
         configurer.configureMessageMonitor(TrackingEventProcessor.class, messageMonitorFactory);
     }
