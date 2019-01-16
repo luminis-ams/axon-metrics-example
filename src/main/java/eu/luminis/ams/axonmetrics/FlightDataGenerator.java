@@ -34,17 +34,17 @@ public class FlightDataGenerator {
                                                           ZonedDateTime.now(ZoneId.of("Europe/Amsterdam")),
                                                           ZonedDateTime.now(ZoneId.of("Europe/London")).plusHours(2),
                                                           "AMS", "LHR");
-
-        commandGateway.sendAndWait(command);
-
-        boolean overbooking = random.nextBoolean();
-        int numSeatsToBook = overbooking ? 11 : 10;
-        for (int i = 1; i <= numSeatsToBook; i++) {
-            try{
-                commandGateway.sendAndWait(new BookSeatCommand(flightId,"Passenger_ " + i));
-            } catch (IllegalArgumentException e){
-                LOGGER.warn("Failed to book seat");
+        commandGateway.send(command, (c, r) -> {
+            boolean overbooking = random.nextBoolean();
+            int numSeatsToBook = overbooking ? 11 : 10;
+            for (int i = 1; i <= numSeatsToBook; i++) {
+                try{
+                    commandGateway.send(new BookSeatCommand(flightId,"Passenger_ " + i));
+                } catch (IllegalArgumentException e){
+                    LOGGER.warn("Failed to book seat");
+                }
             }
-        }
+        });
+
     }
 }

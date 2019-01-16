@@ -1,4 +1,4 @@
-package eu.luminis.ams.axonmetrics.command;
+package eu.luminis.ams.axonmetrics.commandmodel;
 
 
 import eu.luminis.ams.axonmetrics.api.BookSeatCommand;

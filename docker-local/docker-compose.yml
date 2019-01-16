@@ -7,7 +7,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - $PWD:/etc/prometheus/
+      - .:/etc/prometheus/
 
   grafana:
     image: grafana/grafana

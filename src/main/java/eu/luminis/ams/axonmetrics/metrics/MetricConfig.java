@@ -7,7 +7,6 @@ import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.config.Configurer;
 import org.axonframework.config.ConfigurerModule;
 import org.axonframework.config.MessageMonitorFactory;
-import org.axonframework.eventhandling.EventMessage;
 import org.axonframework.eventhandling.TrackingEventProcessor;
 import org.axonframework.metrics.CapacityMonitor;
 import org.axonframework.metrics.MessageCountingMonitor;
@@ -16,7 +15,10 @@ import org.axonframework.monitoring.MultiMessageMonitor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.TimeUnit;
+
 @Configuration
+@SuppressWarnings("Duplicates")
 public class MetricConfig {
 
     @Bean
@@ -48,20 +50,19 @@ public class MetricConfig {
                                                                  clazz -> componentName + "_" + clazz.getSimpleName(),
                                                                  metricRegistry);
 
-            CustomPayloadTypeMessageMonitorWrapper<CapacityMonitor> capacityMonitor =
-                    new CustomPayloadTypeMessageMonitorWrapper<>(CapacityMonitor::new,
-                                                                 clazz -> componentName + "_" + clazz.getSimpleName(),
+            CustomPayloadTypeMessageMonitorWrapper<CapacityMonitor> capacityMonitor10Minutes =
+                    new CustomPayloadTypeMessageMonitorWrapper<>(() -> new CapacityMonitor(10, TimeUnit.MINUTES),
+                                                                 clazz -> componentName + "_" + clazz.getSimpleName() + "_10m",
                                                                  metricRegistry);
 
-            // The configurer only accepts message monitors that deal with messages of type Message<?>, I've added a
-            // casting decorator that casts to EventMessage which is needed to use the EventProcessorLatencyMonitor
-            CustomPayloadTypeMessageMonitorWrapper<CastingMessageMonitorDecorator<EventMessage<?>, CustomEventProcessorLatencyMonitor>> eventLatencyMonitor =
-                    new CustomPayloadTypeMessageMonitorWrapper<>(() -> new CastingMessageMonitorDecorator<>(new CustomEventProcessorLatencyMonitor()),
-                                                                 clazz -> componentName + "_" + clazz.getSimpleName(),
+            CustomPayloadTypeMessageMonitorWrapper<CapacityMonitor> capacityMonitor1Minute =
+                    new CustomPayloadTypeMessageMonitorWrapper<>(() -> new CapacityMonitor(1, TimeUnit.MINUTES),
+                                                                 clazz -> componentName + "_" + clazz.getSimpleName() + "_1m",
                                                                  metricRegistry);
 
-            return new MultiMessageMonitor<>(messageCounterPerType, messageTimerPerType, capacityMonitor, eventLatencyMonitor);
 
+            return new MultiMessageMonitor<>(messageCounterPerType, messageTimerPerType, capacityMonitor1Minute,
+                                             capacityMonitor10Minutes);
         };
         configurer.configureMessageMonitor(TrackingEventProcessor.class, messageMonitorFactory);
     }
@@ -71,17 +72,17 @@ public class MetricConfig {
             CustomPayloadTypeMessageMonitorWrapper<MessageCountingMonitor> messageCounterPerType =
                     new CustomPayloadTypeMessageMonitorWrapper<>(
                             MessageCountingMonitor::new,
-                            clazz -> "commandBus_" + clazz.getSimpleName(),
+                            clazz -> componentName + "_" + clazz.getSimpleName(),
                             metricRegistry);
 
             CustomPayloadTypeMessageMonitorWrapper<MessageTimerMonitor> messageTimerPerType =
                     new CustomPayloadTypeMessageMonitorWrapper<>(MessageTimerMonitor::new,
-                                                                 clazz -> "commandBus_" + clazz.getSimpleName(),
+                                                                 clazz -> componentName + "_" + clazz.getSimpleName(),
                                                                  metricRegistry);
 
             CustomPayloadTypeMessageMonitorWrapper<CapacityMonitor> capacityMonitor =
                     new CustomPayloadTypeMessageMonitorWrapper<>(CapacityMonitor::new,
-                                                                 clazz -> "commandBus_" + clazz.getSimpleName(),
+                                                                 clazz -> componentName + "_" + clazz.getSimpleName(),
                                                                  metricRegistry);
 
             return new MultiMessageMonitor<>(messageCounterPerType, messageTimerPerType, capacityMonitor);

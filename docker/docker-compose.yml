@@ -9,7 +9,7 @@ services:
     ports:
       - 9090:9090
     volumes:
-      - $PWD:/etc/prometheus/
+      - .:/etc/prometheus/
 
   axon-app:
     image: luminis-ams/axon-metrics-prometheus:0.0.1-SNAPSHOT
@@ -18,7 +18,7 @@ services:
       axon-server:
         condition: service_healthy
     ports:
-      - 8081:8080
+      - 8080:8080
     environment:
       - axon.axonserver.servers=axon-server
 
