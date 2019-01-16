@@ -7,7 +7,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - .:/etc/prometheus/
+      - ./prometheus/:/etc/prometheus/
 
   grafana:
     image: grafana/grafana
@@ -16,6 +16,11 @@ services:
       - prometheus
     ports:
       - 3000:3000
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=password
+      - GF_USERS_ALLOW_SIGN_UP=false
 
   axon-server:
     image: axoniq/axonserver
