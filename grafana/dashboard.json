@@ -157,8 +157,8 @@
       "gridPos": {
         "h": 9,
         "w": 12,
-        "x": 12,
-        "y": 0
+        "x": 0,
+        "y": 9
       },
       "id": 2,
       "legend": {
@@ -187,24 +187,28 @@
           "expr": "eu_luminis_ams_axonmetrics_eventlistener_quick_SeatBookedEvent_1m_capacity",
           "format": "time_series",
           "intervalFactor": 1,
+          "legendFormat": "QuickEventListener_SeatBookedEvent",
           "refId": "A"
         },
         {
           "expr": "eu_luminis_ams_axonmetrics_eventlistener_slow_SeatBookedEvent_1m_capacity",
           "format": "time_series",
           "intervalFactor": 1,
+          "legendFormat": "SlowEventListener_SeatBookedEvent",
           "refId": "B"
         },
         {
           "expr": "eu_luminis_ams_axonmetrics_eventlistener_quick_FlightPlannedEvent_1m_capacity",
           "format": "time_series",
           "intervalFactor": 1,
+          "legendFormat": "QuickEventListener_FlightPlannedEvent",
           "refId": "C"
         },
         {
           "expr": "eu_luminis_ams_axonmetrics_eventlistener_slow_FlightPlannedEvent_1m_capacity",
           "format": "time_series",
           "intervalFactor": 1,
+          "legendFormat": "SlowEventListener_FlightPlannedEvent",
           "refId": "D"
         }
       ],
@@ -259,7 +263,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 9
+        "y": 18
       },
       "id": 4,
       "legend": {
@@ -288,24 +292,28 @@
           "expr": "eu_luminis_ams_axonmetrics_eventlistener_quick_FlightPlannedEvent_allTimer{quantile=\"0.5\"}",
           "format": "time_series",
           "intervalFactor": 1,
+          "legendFormat": "QuickEventListener_FlightPlannedEvent",
           "refId": "B"
         },
         {
           "expr": "eu_luminis_ams_axonmetrics_eventlistener_slow_FlightPlannedEvent_allTimer{quantile=\"0.5\"}",
           "format": "time_series",
           "intervalFactor": 1,
+          "legendFormat": "SlowEventListener_FlightPlannedEvent",
           "refId": "C"
         },
         {
           "expr": "eu_luminis_ams_axonmetrics_eventlistener_slow_SeatBookedEvent_allTimer{quantile=\"0.5\"}",
           "format": "time_series",
           "intervalFactor": 1,
+          "legendFormat": "SlowEventListener_SeatBookedEvent",
           "refId": "D"
         },
         {
           "expr": "eu_luminis_ams_axonmetrics_eventlistener_quick_SeatBookedEvent_allTimer{quantile=\"0.5\"}",
           "format": "time_series",
           "intervalFactor": 1,
+          "legendFormat": "QuickEventListener_SeatBookedEvent",
           "refId": "E"
         }
       ],
